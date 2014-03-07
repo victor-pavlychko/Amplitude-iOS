@@ -462,7 +462,7 @@ static BOOL useAdvertisingIdForDeviceId = NO;
                 return;
             }
             NSString *eventsString = SAFE_ARC_AUTORELEASE([[NSString alloc] initWithData:eventsDataLocal encoding:NSUTF8StringEncoding]);
-            [Amplitude makeEventUploadPostRequest:@"https://api.amplitude.com/" events:eventsString lastEventIDUploaded:lastEventIDUploaded];
+            [Amplitude makeEventUploadPostRequest:@"http://api.amplitude.com/" events:eventsString lastEventIDUploaded:lastEventIDUploaded];
         }
         
     }];
