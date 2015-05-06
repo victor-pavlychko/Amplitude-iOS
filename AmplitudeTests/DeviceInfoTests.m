@@ -7,7 +7,13 @@
 //
 
 #import <XCTest/XCTest.h>
+
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#else
+#import <Cocoa/Cocoa.h>
+#endif // TARGET_OS_IPHONE
+
 #import <OCMock/OCMock.h>
 #import "Amplitude.h"
 #import "AMPConstants.h"
@@ -35,20 +41,30 @@
 
 - (void) testAppVersion {
     id mockBundle = [OCMockObject niceMockForClass:[NSBundle class]];
-    [[[mockBundle stub] andReturn:mockBundle] mainBundle];
+    OCMStub([mockBundle mainBundle]).andReturn(mockBundle);
     OCMStub([mockBundle infoDictionary]).andReturn(@{
         @"CFBundleShortVersionString": kAMPVersion
     });
     
     XCTAssertEqualObjects(kAMPVersion, _deviceInfo.appVersion);
+
+    [mockBundle stopMocking];
 }
 
 - (void) testOsName {
+#if TARGET_OS_IPHONE
     XCTAssertEqualObjects(@"ios", _deviceInfo.osName);
+#else
+    XCTAssertEqualObjects(@"OSX", _deviceInfo.osName);
+#endif
 }
 
 - (void) testOsVersion {
+#if TARGET_OS_IPHONE
     XCTAssertEqualObjects([[UIDevice currentDevice] systemVersion], _deviceInfo.osVersion);
+#else
+    XCTAssertEqualObjects([[NSProcessInfo processInfo] operatingSystemVersionString], _deviceInfo.osVersion);
+#endif
 }
 
 - (void) testManufacturer {
@@ -56,7 +72,10 @@
 }
 
 - (void) testModel {
+    XCTAssertNotNil(_deviceInfo.model);
+#if TARGET_OS_IPHONE
     XCTAssertEqualObjects(@"Simulator", _deviceInfo.model);
+#endif
 }
 
 - (void) testCarrier {

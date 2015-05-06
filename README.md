@@ -19,12 +19,12 @@ A [demo application](https://github.com/amplitude/iOS-Demo) is available to show
 
 5. In the application:didFinishLaunchingWithOptions: method of your YourAppNameAppDelegate.m file, initialize the SDK:
     ``` objective-c
-    [Amplitude initializeApiKey:@"YOUR_API_KEY_HERE"];
+    [[Amplitude instance] initializeApiKey:@"YOUR_API_KEY_HERE"];
     ```
 
 6. To track an event anywhere in the app, call:
     ``` objective-c
-    [Amplitude logEvent:@"EVENT_IDENTIFIER_HERE"];
+    [[Amplitude instance] logEvent:@"EVENT_IDENTIFIER_HERE"];
     ```
 
 7. Events are saved locally. Uploads are batched to occur every 30 events and every 30 seconds, as well as on app close. After calling logEvent in your app, you will immediately see data appear on the Amplitude Website.
@@ -43,7 +43,7 @@ If your users can take actions while the app is in the background and you would 
 MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
 [commandCenter.nextTrackCommand addTargetUsingBlock:^(MPRemoteCommandEvent *event) {
   [[Amplitude instance] startSession]
-  [Amplitude logEvent:@"Skip Track"];
+  [[Amplitude instance] logEvent:@"Skip Track"];
 }]
 ```
 
@@ -53,7 +53,7 @@ Or, you may want to track a session for interactions with push notification acti
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())completionHandler {
   [[Amplitude instance] initializeApiKey:@"KEY" userId:nil startSession:YES];
   if ([identifier isEqualToString:NotificationActionOneIdent]) {
-    [Amplitude logEvent:@"Action One"];
+    [[Amplitude instance] logEvent:@"Action One"];
   }
 }
 ```
@@ -63,7 +63,7 @@ Or, you may want to track a session for interactions with push notification acti
 If your app has its own login system that you want to track users with, you can call `setUserId:` at any time:
 
 ``` objective-c
-[Amplitude setUserId:@"USER_ID_HERE"];
+[[Amplitude instance] setUserId:@"USER_ID_HERE"];
 ```
 
 A user's data will be merged on the backend so that any events up to that point on the same device will be tracked under the same user.
@@ -71,7 +71,7 @@ A user's data will be merged on the backend so that any events up to that point 
 You can also add the user ID as an argument to the `initializeApiKey:` call:
 
 ``` objective-c
-[Amplitude initializeApiKey:@"YOUR_API_KEY_HERE" userId:@"USER_ID_HERE"];
+[[Amplitude instance] initializeApiKey:@"YOUR_API_KEY_HERE" userId:@"USER_ID_HERE"];
 ```
 
 # Setting Event Properties #
@@ -81,7 +81,7 @@ You can attach additional data to any event by passing a NSDictionary object as 
 ``` objective-c
 NSMutableDictionary *eventProperties = [NSMutableDictionary dictionary];
 [eventProperties setValue:@"VALUE_GOES_HERE" forKey:@"KEY_GOES_HERE"];
-[Amplitude logEvent:@"Compute Hash" withEventProperties:eventProperties];
+[[Amplitude instance] logEvent:@"Compute Hash" withEventProperties:eventProperties];
 ```
 
 # Setting User Properties
@@ -91,7 +91,7 @@ To add properties that are associated with a user, you can set user properties:
 ``` objective-c
 NSMutableDictionary *userProperties = [NSMutableDictionary dictionary];
 [userProperties setValue:@"VALUE_GOES_HERE" forKey:@"KEY_GOES_HERE"];
-[Amplitude setUserProperties:userProperties];
+[[Amplitude instance] setUserProperties:userProperties];
 ```
 
 To replace any existing user properties with a new set:
@@ -119,7 +119,7 @@ out is disabled.
 To track revenue from a user, call
 
 ``` objective-c
-[Amplitude logRevenue:@"productIdentifier" quantity:1 price:[NSNumber numberWithDouble:3.99]]
+[[Amplitude instance] logRevenue:@"productIdentifier" quantity:1 price:[NSNumber numberWithDouble:3.99]]
 ```
 
 after a successful purchase transaction. `logRevenue:` takes a string to identify the product (can be pulled from `SKPaymentTransaction.payment.productIdentifier`). `quantity:` takes an integer with the quantity of product purchased. `price:` takes a NSNumber with the dollar amount of the sale as the only argument. This allows us to automatically display data relevant to revenue on the Amplitude website, including average revenue per daily active user (ARPDAU), 7, 30, and 90 day revenue, lifetime value (LTV) estimates, and revenue by advertising campaign cohort and daily/weekly/monthly cohorts.
@@ -129,7 +129,7 @@ after a successful purchase transaction. `logRevenue:` takes a string to identif
 Then call
 
 ``` objective-c
-[Amplitude logRevenue:@"productIdentifier" quantity:1 price:[NSNumber numberWithDouble:3.99 receipt:receiptData]
+[[Amplitude instance] logRevenue:@"productIdentifier" quantity:1 price:[NSNumber numberWithDouble:3.99 receipt:receiptData]
 ```
 
 after a successful purchase transaction. `receipt:` takes the receipt NSData from the app store. For details on how to obtain the receipt data, see [Apple's guide on Receipt Validation](https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html#//apple_ref/doc/uid/TP40010573-CH104-SW1).

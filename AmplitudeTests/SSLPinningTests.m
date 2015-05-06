@@ -7,7 +7,13 @@
 //
 
 #import <XCTest/XCTest.h>
+
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#else
+#import <Cocoa/Cocoa.h>
+#endif // TARGET_OS_IPHONE
+
 #import <OCMock/OCMock.h>
 #import "Amplitude.h"
 #import "Amplitude+Test.h"

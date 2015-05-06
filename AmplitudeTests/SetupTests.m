@@ -7,11 +7,18 @@
 //
 
 #import <XCTest/XCTest.h>
+
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#else
+#import <Cocoa/Cocoa.h>
+#endif // TARGET_OS_IPHONE
+
 #import <OCMock/OCMock.h>
 #import "Amplitude.h"
 #import "Amplitude+Test.h"
 #import "BaseTestCase.h"
+#import "AMPDeviceInfo.h"
 
 @interface SetupTests : BaseTestCase
 
@@ -37,8 +44,10 @@
     [self.amplitude initializeApiKey:apiKey];
     [self.amplitude flushQueue];
     XCTAssertNotNil([self.amplitude deviceId]);
-    XCTAssertEqual([self.amplitude deviceId].length, 36);
-    XCTAssertEqualObjects([self.amplitude deviceId], [[[UIDevice currentDevice] identifierForVendor] UUIDString]);
+    XCTAssertGreaterThanOrEqual([self.amplitude deviceId].length, 36);
+
+    AMPDeviceInfo *info = [[AMPDeviceInfo alloc] init];
+    XCTAssertEqualObjects([self.amplitude deviceId], info.vendorID);
 }
 
 - (void)testUserIdNotSet {

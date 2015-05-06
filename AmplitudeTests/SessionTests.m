@@ -7,7 +7,13 @@
 //
 
 #import <XCTest/XCTest.h>
+
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#else
+#import <Cocoa/Cocoa.h>
+#endif // TARGET_OS_IPHONE
+
 #import <OCMock/OCMock.h>
 #import "Amplitude.h"
 #import "Amplitude+Test.h"
@@ -28,16 +34,34 @@
 }
 
 - (void)testSessionAutoStarted {
+#if TARGET_OS_IPHONE
+    id mockApplication = [OCMockObject niceMockForClass:[UIApplication class]];
+    [[[mockApplication stub] andReturn:mockApplication] sharedApplication];
+    OCMStub([mockApplication applicationState]).andReturn(UIApplicationStateActive);
+#else
+    id mockApplication = [OCMockObject niceMockForClass:[NSApplication class]];
+    [[[mockApplication stub] andReturn:mockApplication] sharedApplication];
+    OCMStub([mockApplication isActive]).andReturn(YES);
+#endif // TARGET_OS_IPHONE
+
     [self.amplitude initializeApiKey:apiKey];
     [self.amplitude flushQueue];
     XCTAssertEqual([self.amplitude queuedEventCount], 1);
     XCTAssert([[self.amplitude getLastEvent][@"event_type"] isEqualToString:@"session_start"]);
+
+    [mockApplication stopMocking];
 }
 
 - (void)testSessionAutoStartedBackground {
+#if TARGET_OS_IPHONE
     id mockApplication = [OCMockObject niceMockForClass:[UIApplication class]];
     [[[mockApplication stub] andReturn:mockApplication] sharedApplication];
     OCMStub([mockApplication applicationState]).andReturn(UIApplicationStateBackground);
+#else
+    id mockApplication = [OCMockObject niceMockForClass:[NSApplication class]];
+    [[[mockApplication stub] andReturn:mockApplication] sharedApplication];
+    OCMStub([mockApplication isActive]).andReturn(NO);
+#endif // TARGET_OS_IPHONE
 
     [self.amplitude initializeApiKey:apiKey];
     [self.amplitude flushQueue];
@@ -47,9 +71,15 @@
 }
 
 - (void)testSessionAutoStartedInactive {
+#if TARGET_OS_IPHONE
     id mockApplication = [OCMockObject niceMockForClass:[UIApplication class]];
     [[[mockApplication stub] andReturn:mockApplication] sharedApplication];
     OCMStub([mockApplication applicationState]).andReturn(UIApplicationStateInactive);
+#else
+    id mockApplication = [OCMockObject niceMockForClass:[NSApplication class]];
+    [[[mockApplication stub] andReturn:mockApplication] sharedApplication];
+    OCMStub([mockApplication isActive]).andReturn(YES);
+#endif // TARGET_OS_IPHONE
 
     [self.amplitude initializeApiKey:apiKey];
     [self.amplitude flushQueue];
@@ -79,8 +109,13 @@
     [self.amplitude initializeApiKey:apiKey userId:nil startSession:NO];
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+#if TARGET_OS_IPHONE
     [center postNotificationName:UIApplicationDidBecomeActiveNotification object:nil userInfo:nil];
     [center postNotificationName:UIApplicationDidBecomeActiveNotification object:nil userInfo:nil];
+#else
+    [center postNotificationName:NSApplicationDidBecomeActiveNotification object:nil userInfo:nil];
+    [center postNotificationName:NSApplicationDidBecomeActiveNotification object:nil userInfo:nil];
+#endif // TARGET_OS_IPHONE
 
     [self.amplitude flushQueue];
     XCTAssertEqual([self.amplitude queuedEventCount], 1);
@@ -94,7 +129,11 @@
     [self.amplitude initializeApiKey:apiKey userId:nil startSession:NO];
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+#if TARGET_OS_IPHONE
     [center postNotificationName:UIApplicationDidEnterBackgroundNotification object:nil userInfo:nil];
+#else
+    [center postNotificationName:NSApplicationDidResignActiveNotification object:nil userInfo:nil];
+#endif // TARGET_OS_IPHONE
 
     [self.amplitude flushQueue];
     XCTAssertEqual([self.amplitude queuedEventCount], 1);
@@ -120,9 +159,15 @@
     [self.amplitude initializeApiKey:apiKey userId:nil startSession:NO];
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+#if TARGET_OS_IPHONE
     [center postNotificationName:UIApplicationDidBecomeActiveNotification object:nil userInfo:nil];
     [center postNotificationName:UIApplicationDidEnterBackgroundNotification object:nil userInfo:nil];
     [center postNotificationName:UIApplicationDidBecomeActiveNotification object:nil userInfo:nil];
+#else
+    [center postNotificationName:NSApplicationDidBecomeActiveNotification object:nil userInfo:nil];
+    [center postNotificationName:NSApplicationDidResignActiveNotification object:nil userInfo:nil];
+    [center postNotificationName:NSApplicationDidBecomeActiveNotification object:nil userInfo:nil];
+#endif
 
     [self.amplitude flushQueue];
     XCTAssertEqual([self.amplitude queuedEventCount], 3);

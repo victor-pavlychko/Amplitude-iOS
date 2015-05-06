@@ -7,7 +7,13 @@
 //
 
 #import <XCTest/XCTest.h>
+
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#else
+#import <Cocoa/Cocoa.h>
+#endif // TARGET_OS_IPHONE
+
 #import <OCMock/OCMock.h>
 #import "AMPLocationManagerDelegate.h"
 
@@ -44,10 +50,15 @@ CLLocationManager *locationManager;
 - (void)testDidChangeAuthorizationStatus {
     [locationManagerDelegate locationManager:locationManager
                 didChangeAuthorizationStatus:kCLAuthorizationStatusAuthorized];
+#if TARGET_OS_IPHONE
     [locationManagerDelegate locationManager:locationManager
                 didChangeAuthorizationStatus:kCLAuthorizationStatusAuthorizedAlways];
     [locationManagerDelegate locationManager:locationManager
                 didChangeAuthorizationStatus:kCLAuthorizationStatusAuthorizedWhenInUse];
+#else
+    [locationManagerDelegate locationManager:locationManager
+                didChangeAuthorizationStatus:kCLAuthorizationStatusAuthorized];
+#endif
     
 }
 @end
