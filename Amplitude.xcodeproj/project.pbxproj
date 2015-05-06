@@ -29,6 +29,9 @@
 		9D4728891AFABE0E007B543C /* DeviceInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DDE2C021AE7069200B740EC /* DeviceInfoTests.m */; };
 		9D47288A1AFABE0E007B543C /* SetupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D82D1D71AC1006600C3F321 /* SetupTests.m */; };
 		9D47288B1AFABE0E007B543C /* SSLPinningTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D265EF31AB3FA2500399D93 /* SSLPinningTests.m */; };
+		9D47288C1AFACABE007B543C /* ComodoRsaCA.der in Resources */ = {isa = PBXBuildFile; fileRef = 9D76A3A41ABA5F890062E132 /* ComodoRsaCA.der */; };
+		9D47288D1AFACABE007B543C /* ComodoRsaDomainValidationCA.der in Resources */ = {isa = PBXBuildFile; fileRef = 9D76A3A31ABA5F890062E132 /* ComodoRsaDomainValidationCA.der */; };
+		9D47288E1AFACABE007B543C /* InvalidCertificationAuthority.der in Resources */ = {isa = PBXBuildFile; fileRef = 9D40E1941AB3F6550095C7C6 /* InvalidCertificationAuthority.der */; };
 		9D6E19531ACCDE1C00352C6C /* ISPCertificatePinning.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D6E194D1ACCDE1C00352C6C /* ISPCertificatePinning.m */; };
 		9D6E19541ACCDE1C00352C6C /* ISPPinnedNSURLConnectionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D6E194F1ACCDE1C00352C6C /* ISPPinnedNSURLConnectionDelegate.m */; };
 		9D6E19551ACCDE1C00352C6C /* ISPPinnedNSURLSessionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D6E19511ACCDE1C00352C6C /* ISPPinnedNSURLSessionDelegate.m */; };
@@ -366,6 +369,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D47288C1AFACABE007B543C /* ComodoRsaCA.der in Resources */,
+				9D47288D1AFACABE007B543C /* ComodoRsaDomainValidationCA.der in Resources */,
+				9D47288E1AFACABE007B543C /* InvalidCertificationAuthority.der in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

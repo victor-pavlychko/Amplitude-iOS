@@ -61,7 +61,7 @@
 
 -(NSString*) appVersion {
     if (!_appVersion) {
-        _appVersion = SAFE_ARC_RETAIN([[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"]);
+        _appVersion = SAFE_ARC_RETAIN([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]);
     }
     return _appVersion;
 }

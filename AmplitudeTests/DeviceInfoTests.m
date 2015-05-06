@@ -42,9 +42,7 @@
 - (void) testAppVersion {
     id mockBundle = [OCMockObject niceMockForClass:[NSBundle class]];
     OCMStub([mockBundle mainBundle]).andReturn(mockBundle);
-    OCMStub([mockBundle infoDictionary]).andReturn(@{
-        @"CFBundleShortVersionString": kAMPVersion
-    });
+    OCMStub([mockBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"]).andReturn(kAMPVersion);
     
     XCTAssertEqualObjects(kAMPVersion, _deviceInfo.appVersion);
 

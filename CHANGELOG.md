@@ -1,5 +1,6 @@
 ## Unreleased
 
+* Support use in OS X applications.
 * Static methods are now deprecated. Use the [Amplitude instance] singleton instead.
 
 ## 2.4.0 (April 7, 2015)
