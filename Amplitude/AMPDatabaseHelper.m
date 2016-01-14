@@ -89,6 +89,14 @@ static NSString *const GET_VALUE = @"SELECT %@, %@ FROM %@ WHERE %@ = ?;";
         if (![[NSFileManager defaultManager] fileExistsAtPath:_databasePath]) {
             [self createTables];
         }
+
+        // update database file permissions to allow access if device locks
+        NSDictionary *fileAttributes = @{NSFileProtectionKey: NSFileProtectionCompleteUnlessOpen};
+        NSError *error;
+        BOOL success = [[NSFileManager defaultManager] setAttributes:fileAttributes ofItemAtPath:_databasePath error:&error];
+        if (!success) {
+            NSLog(@"Update database file permissions failed: %@", error);
+        }
     }
     return self;
 }
