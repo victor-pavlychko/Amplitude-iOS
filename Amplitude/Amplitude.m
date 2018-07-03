@@ -521,7 +521,19 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
         block();
         return NO;
     } else {
-        [_backgroundQueue addOperationWithBlock:block];
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+            block();
+            dispatch_semaphore_signal(semaphore);
+        }];
+        [[NSProcessInfo processInfo] performExpiringActivityWithReason:@(__PRETTY_FUNCTION__) usingBlock:^(BOOL expired) {
+            if (!expired) {
+                [self->_backgroundQueue addOperation:operation];
+                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            } else {
+                dispatch_semaphore_signal(semaphore);
+            }
+        }];
         return YES;
     }
 }
