@@ -518,11 +518,11 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
 {
     if ([[NSOperationQueue currentQueue].name isEqualToString:BACKGROUND_QUEUE_NAME]) {
         AMPLITUDE_LOG(@"Already running in the background.");
-        [[NSProcessInfo processInfo] performActivityWithOptions:NSActivityBackground reason:@"" usingBlock:block];
+        block();
         return NO;
     } else {
         [_backgroundQueue addOperationWithBlock:^{
-            [[NSProcessInfo processInfo] performActivityWithOptions:NSActivityBackground reason:@"" usingBlock:block];
+            [[NSProcessInfo processInfo] performActivityWithOptions:NSActivityBackground reason:@"Amplitude" usingBlock:block];
         }];
         return YES;
     }
